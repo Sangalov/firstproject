@@ -1,0 +1,117 @@
+// ConsoleApplication23.cpp : Сортировка массива размером в 1000 элементов,
+// заполненного произвольными вещественными числами, имеющими три знака
+// после запятой, повторенная 1000 раз.
+// Студент: Сангалов Андрей
+
+#include <iostream>
+// #include <chrono>
+
+using namespace std;
+
+// Функция быстрой сортировки с разделением массива по случайно выбранному
+// опорному элементу
+int quickSort(float* data, int const len, int step)
+{
+    int const lenD = len;
+    float pivot = 0;
+    int ind = lenD / 2;
+    int i, j = 0, k = 0;
+
+    if (lenD > 1) {
+        step++;
+        float* L = new float[lenD];
+        float* R = new float[lenD];
+        pivot = data[ind];
+        for (i = 0; i < lenD; i++) {
+            if (i != ind) {
+                if (data[i] < pivot) {
+                    L[j] = data[i];
+                    j++;
+                }
+                else {
+                    R[k] = data[i];
+                    k++;
+                }
+            }
+        }
+        step = quickSort(L, j, step);
+        step = quickSort(R, k, step);
+        for (int cnt = 0; cnt < lenD; cnt++) {
+            if (cnt < j) {
+                data[cnt] = L[cnt];;
+            }
+            else if (cnt == j) {
+                data[cnt] = pivot;
+            }
+            else {
+                data[cnt] = R[cnt - (j + 1)];
+            }
+        }
+    }
+
+    return step;
+}
+
+// Основная программа сортировки
+int main()
+{
+    setlocale(LC_ALL, "rus");
+    // cout << "Сортировка массива методом быстрой сортировки - quickSort.\n\n";
+
+    int len = 1000;
+    // cout << "Введите количество элементов массива :\n>";
+    // cin >> len;
+
+    int count = 0;
+    int step = 0;
+    int const repeat = 1000;    // Количество повторений сортировки
+                                // (количество массивов)
+
+    // auto start = chrono::high_resolution_clock::now();
+
+    for (count = 0; count < repeat; count++)
+    {
+        float* data = new float[len];
+        srand(time(NULL));
+        for (int i = 0; i < len; i++)
+        {
+            // Диапазон положительных вещественных чисел
+            // с тремя знаками после запятой
+            data[i] = (float)(rand() % 20001) / 1000;
+        }
+
+        // Вывод на экран исходного массива (только для отладки)
+        /*
+        int i;
+        for (i = 0; i < len; i++)
+        {
+            cout << data[i] << " ";
+        }
+        cout << "\n";
+        */
+
+        // Сортировка массива с фиксированием количества затраченных шагов
+        step = quickSort(data, len, step);
+
+        // Вывод на экран отсортированного массива (только для отладки)
+        /*
+        for (i = 0; i < len; i++)
+        {
+            cout << data[i] << " ";
+        }
+        cout << "\n\n";
+        */
+    }
+
+    // auto end = chrono::high_resolution_clock::now();
+
+    // cout << "\n\n";
+    // cout << "Общее количество выполненных шагов: " << step;
+    // cout << "\n";
+
+    // chrono::duration<float> duration = end - start;
+    // cout << "Общее время сортировки всех 1000 массивов, каждый из которых ";
+    // cout << "содержит по " << len << " элементов, составило: ";
+    // cout << duration.count() << " секунд.";
+    // cout << "\n";
+}
